@@ -34,13 +34,15 @@ theme_set(theme_minimal(base_size = rcfss::base_size))
 
 ```{r}
 # get unemployment data and wrangle
-unemp <- read_excel(path = here("data", "bls-unemployment.xlsx"), skip = 3) %>%
+unemp_month <- read_excel(path = here("data", "bls-unemployment.xlsx"), skip = 3) %>%
   # extract state_fips code
   mutate(state_fips = str_sub(string = `Series ID`, start = 6L, end = 7L)) %>%
   # tidy into long form
   select(state_fips, everything(), -`Series ID`) %>%
   pivot_longer(cols = -state_fips, names_to = "month_year", values_to = "unemp") %>%
-  separate(col = month_year, into = c("month", "year"), convert = TRUE) %>%
+  separate(col = month_year, into = c("month", "year"), convert = TRUE)
+
+unemp <- unemp_month %>%
   # aggregate to annual
   group_by(state_fips, year) %>%
   summarize(unemp = mean(unemp, na.rm = TRUE) / 100)
@@ -255,11 +257,9 @@ gg_color_gradient(n = 200) +
 
 ---
 
-class: center, middle, invert
+class: center, middle, inverse
 
 # When to use quantitative or qualitative color scales?
-
----
 
 ```{r}
 include_graphics(path = here("images", "quant-qual.png"))
@@ -315,8 +315,10 @@ include_graphics(path = here("images", "treemap-third-var.png"))
 few_df <- read_csv(file = here("data", "data-AYui0.csv")) %>%
   rename(state = X.1) %>%
   pivot_longer(cols = -state, names_to = "quarter", values_to = "var_to_plan") %>%
-  mutate(state = factor(state, levels = c("California", "New Jersey", "Louisiana", "Montana")),,
-         var_to_plan = var_to_plan / 100)
+  mutate(
+    state = factor(state, levels = c("California", "New Jersey", "Louisiana", "Montana")), ,
+    var_to_plan = var_to_plan / 100
+  )
 
 # recreate the plot
 ggplot(data = few_df, mapping = aes(x = quarter, y = var_to_plan, fill = state)) +
@@ -339,8 +341,10 @@ ggplot(data = few_df, mapping = aes(x = quarter, y = var_to_plan, fill = state))
 ```{r}
 ggplot(data = few_df, mapping = aes(x = quarter, y = var_to_plan, group = state, color = state)) +
   geom_line() +
-  ggrepel::geom_text_repel(data = few_df %>% filter(quarter == "Q4"),
-                           mapping = aes(label = state), direction = "y", nudge_x = .3, size = 6) +
+  ggrepel::geom_text_repel(
+    data = few_df %>% filter(quarter == "Q4"),
+    mapping = aes(label = state), direction = "y", nudge_x = .3, size = 6
+  ) +
   scale_y_continuous(labels = scales::percent) +
   scale_color_brewer(palette = "Set1") +
   labs(
@@ -396,6 +400,16 @@ include_graphics(path = here("images", "hues-single.png"))
 
 ---
 
+class: center, middle, inverse
+
+# When to use sequential or diverging color scales?
+
+```{r}
+include_graphics(path = here("images", "seq-div.png"))
+```
+
+---
+
 # Except when you shouldn't!
 
 - Meaningful middle point
@@ -445,9 +459,11 @@ internet_sf <- left_join(x = world, y = internet_use, by = c("iso_a3" = "code"))
 internet_plot <- ggplot(data = internet_sf, mapping = aes(fill = usage)) +
   geom_sf(color = "white") +
   coord_sf(crs = "+proj=robin") +
-  labs(title = "Share of individuals using the internet in the last 3 months",
-       subtitle = "2015",
-       fill = NULL) +
+  labs(
+    title = "Share of individuals using the internet in the last 3 months",
+    subtitle = "2015",
+    fill = NULL
+  ) +
   theme_void(base_size = 14)
 
 internet_plot +
@@ -478,6 +494,141 @@ include_graphics(path = here("images", "births-div.png"))
 ```{r}
 include_graphics(path = here("images", "births-seq.png"))
 ```
+
+---
+
+
+class: center, middle, inverse
+
+# When to use classed or unclassed color scales?
+
+```{r}
+include_graphics(path = here("images", "class-scale.png"))
+```
+
+---
+
+# Use a classed scale if the data is classed
+
+```{r}
+include_graphics(path = here("images", "class-continuous.png"))
+```
+
+---
+
+# Communicating statistical brackets
+
+```{r}
+# unemployment above or below the national average for March 2021 - 6%
+unemp_oct21 <- read_csv(file = here("data", "unemp-oct-20.csv")) %>%
+  rename(
+    unemp = `unemployment rate`,
+    county_fips = fips
+  ) %>%
+  mutate(
+    us_avg = unemp >= 6.9,
+    unemp = unemp / 100,
+    # cap max unemp rate for demo purposes only
+    unemp = if_else(unemp > 0.15, 0.15, unemp)
+  )
+
+county_sf <- get_urbn_map(map = "counties", sf = TRUE)
+
+unemp_oct21 <- inner_join(county_sf, unemp_oct21)
+```
+
+```{r}
+unemp_class <- ggplot(data = unemp_oct21) +
+  geom_sf(mapping = aes(fill = us_avg), color = "white", size = .1) +
+  geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
+  scale_fill_manual(values = c("grey", "maroon"), labels = c("< 6.9%", ">= 6.9%")) +
+  labs(title = "Counties with an unemployment rate above the\nnational average and below in October 2020", fill = NULL) +
+  theme_void(base_size = 14) +
+  theme(legend.position = "bottom")
+unemp_class
+```
+
+---
+
+# Communicating general patterns
+
+```{r}
+unemp_unclass <- ggplot(data = unemp_oct21) +
+  geom_sf(mapping = aes(fill = unemp), color = "white", size = .1) +
+  geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
+  scale_fill_distiller(
+    palette = "PuOr",
+    values = scales::rescale(c(0.004, 0.06, 0.15)),
+    breaks = c(0.004, 0.06, 0.15),
+    labels = c("Lower", "National average", "Higher")
+  ) +
+  labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
+  theme_void(base_size = 14)
+unemp_unclass
+```
+
+---
+
+# Increased classes for more nuance
+
+```{r}
+unemp_class6 <- unemp_oct21 %>%
+  mutate(unemp = cut_number(unemp, n = 6)) %>%
+  ggplot() +
+  geom_sf(mapping = aes(fill = unemp), color = "white", size = .1) +
+  geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
+  scale_fill_brewer(palette = "PuOr") +
+  labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
+  theme_void(base_size = 14)
+unemp_class6
+```
+
+---
+
+# Assisting with interpretations
+
+```{r}
+{
+  unemp_unclass +
+    theme(legend.position = "none") +
+    coord_sf(xlim = c(-109, -91), ylim = c(39, 49), crs = 4326)
+} + {
+  unemp_class6 +
+    theme(legend.position = "none") +
+    coord_sf(xlim = c(-109, -91), ylim = c(39, 49), crs = 4326)
+}
+```
+
+---
+
+# Directly encoding values
+
+```{r}
+{
+  unemp_unclass +
+    labs(title = NULL, subtitle = NULL) +
+    coord_sf(xlim = c(-109, -91), ylim = c(39, 49), crs = 4326) +
+    scale_fill_distiller(
+      palette = "PuOr",
+      values = scales::rescale(c(0.004, 0.06, 0.15)),
+      breaks = c(0.01, 0.03, 0.05, 0.069, 0.09, 0.11, 0.14),
+      labels = scales::percent
+    )
+} + {
+  unemp_oct21 %>%
+    mutate(unemp = cut_interval(unemp, n = 6) %>%
+      factor(labels = c("1-3%", "3-5%", "5-7.9%", "8-10%", "10-12.9%", "13-15%"))) %>%
+    ggplot() +
+    geom_sf(mapping = aes(fill = unemp), color = "white", size = .1) +
+    geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
+    scale_fill_brewer(palette = "PuOr") +
+    labs(fill = NULL) +
+    coord_sf(xlim = c(-109, -91), ylim = c(39, 49), crs = 4326) +
+    theme_void(base_size = 14)
+}
+```
+
+
 
 
 
