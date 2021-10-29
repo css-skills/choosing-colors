@@ -4,3 +4,4 @@
 - `data-AYui0.csv` - replication dataset for [Few (2008)](https://nbisweden.github.io/Rcourse/files/rules_for_using_color.pdf)
 - `internet-consumption.csv` - replication dataset for [Rost (2020)](https://blog.datawrapper.de/diverging-vs-sequential-color-scales/)
 - `unemp-oct-20.csv` - replication dataset for [Rost (2020)](https://blog.datawrapper.de/classed-vs-unclassed-color-scales/)
+- `US_births*.csv` - U.S. birth data from 1994-2003. Source: Centers for Disease Control and Prevention/Social Security Administration
