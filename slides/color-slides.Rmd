@@ -26,7 +26,6 @@ library(rnaturalearth)
 library(tidycensus)
 library(scales)
 library(RColorBrewer)
-library(rcfss)
 library(countdown)
 
 # useful on MacOS to speed up rendering of geom_sf() objects
