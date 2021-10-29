@@ -1,0 +1,200 @@
+---
+title: "Implementing optimized color palettes"
+output: html_document
+---
+
+```{r packages}
+library(tidyverse)
+library(here)
+library(sf) # for spatial data files
+library(scales) # for improved labels
+```
+
+# Part 1: Implementing color palettes
+
+## Import birth data
+
+```{r}
+births <- read_rds(here("data", "births.Rds"))
+births
+```
+
+## Create a bar plot of average births by weekday
+
+```{r}
+total_births_weekday <- births %>%
+  group_by(day_of_week) %>%
+  summarize(total = sum(births))
+
+ggplot(
+  data = total_births_weekday,
+  mapping = aes(x = day_of_week, y = total, fill = day_of_week)
+) +
+  geom_col() +
+  # Turn off the fill legend because it's redundant
+  guides(fill = "none")
+```
+
+#### Use a sequential palette from Color Brewer
+
+```{r}
+
+```
+
+#### Highlight the weekend bars
+
+Choose an alternative to the default palette
+
+```{r}
+total_births_weekday %>%
+  mutate(weekend = day_of_week %in% c("Saturday", "Sunday")) %>%
+  ggplot(_____) +
+  ...
+```
+
+## Create a heatmap showing average number of births by day of year
+
+```{r}
+avg_births_month_day <- births %>%
+  group_by(month, date_of_month_categorical) %>%
+  summarize(avg_births = mean(births))
+avg_births_month_day
+
+birth_days_plot <- ggplot(
+  data = avg_births_month_day,
+  # By default, the y-axis will have December at the top, so use fct_rev() to reverse it
+  mapping = aes(x = date_of_month_categorical, y = fct_rev(month), fill = avg_births)
+) +
+  geom_tile() +
+  # Add nice labels
+  labs(
+    x = "Day of the month", y = NULL,
+    title = "Average births per day",
+    subtitle = "1994-2014",
+    fill = "Average births"
+  ) +
+  # Force all the tiles to have equal widths and heights
+  coord_equal() +
+  # Use a cleaner theme
+  theme_minimal()
+birth_days_plot
+```
+
+#### Modify the plot to use different color palettes
+
+```{r}
+# viridis - default palette
+birth_days_plot + scale_fill_viridis_c(option = "viridis")
+
+# viridis - magma palette
+birth_days_plot + scale_fill_viridis_c(option = "magma")
+
+# color brewer - orange and red palette
+birth_days_plot + scale_fill_distiller(palette = "OrRd")
+
+# color brewer - yellow, green, and blue palette
+birth_days_plot + scale_fill_distiller(palette = "YlGnBu")
+```
+
+## Import information on median household income in 2017 for Cook County, IL at the tract-level using the ACS
+
+```{r}
+cook_county_path <- here("data", "cook-county-inc.geojson")
+cook_inc <- st_read(dsn = cook_county_path)
+cook_inc
+```
+
+## Draw a choropleth using the median household income data
+
+```{r}
+cook_plot <- ggplot(data = cook_inc) +
+  geom_sf(mapping = aes(fill = estimate, color = estimate), size = .3) +
+  labs(
+    fill = "Median household\nincome",
+    color = "Median household\nincome"
+  ) +
+  theme_void()
+cook_plot
+```
+
+#### Use a continuous color brewer palette to identify each tract's median household income
+
+- Hint - use the `aesthetics` argument to duplicate a scale for multiple channels
+
+```{r}
+
+```
+
+#### Use a continuous `viridis` palette to identify each tract's median household income
+
+```{r}
+
+```
+
+# Part 2: Diverging color palettes
+
+## Modify the birth day heatmap to use a diverging color palette
+
+```{r}
+
+```
+
+## Modify the Cook County household income map to use a diverging color palette
+
+```{r}
+
+```
+
+#### Manually specify the midpoint to be national median household income
+
+- The median household income in 2019 was [$68,703](https://www.census.gov/library/publications/2020/demo/p60-270.html)
+
+```{r}
+# identify minimum, midrange, and maximum values
+cook_inc_range <- range(cook_inc$estimate, na.rm = TRUE)
+cook_inc_scale <- rescale(c(cook_inc_range[[1]], 68703, cook_inc_range[[2]]))
+
+cook_plot +
+  scale_fill_distiller(
+    palette = ______,
+    values = ______,
+    aesthetics = c("fill", "color"),
+    labels = dollar
+  )
+```
+
+# Part 3: Interpolating continuous color palettes
+
+## Draw the same choropleth for Cook County, but convert median household income into quintiles using `viridis`
+
+#### Calculate exact quintiles
+
+```{r}
+
+```
+
+#### Calculate approximate quintiles (i.e. let `viridis` choose an aesthetically pleasing set close to quintiles)
+
+```{r}
+
+```
+
+#### Reverse the direction of the previous plot so that light colors are associated with lower household incomes
+
+How does this change the emphasis of the graph?
+
+```{r}
+
+```
+
+## Draw the same choropleth for Cook County median household income, but manually cut into eight groups and visualize using a diverging color brewer palette
+
+```{r}
+
+```
+
+## Session Info
+
+```{r}
+sessioninfo::session_info()
+```
