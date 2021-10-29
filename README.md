@@ -2,6 +2,7 @@
 
 ## Overview
 
+Researchers frequently use color to communicate numeric values in a data visualization. Most software will implement a default algorithm to select a color palette, and these palettes frequently are hard-to-interpret or are inaccessible to individuals with vision impairments. In this workshop we will develop approaches to readily generate optimized color palettes for continuous and categorical variables.
 
 ## Objectives
 
@@ -32,3 +33,7 @@ Room 295 in [1155 E 60th St](https://goo.gl/maps/7n7wDsd9mjnfRBtR8).
 
 - RStudio Cloud workspace
 - Source materials for the workshop on GitHub
+
+## Acknowledgments
+
+- Overview of color palettes drawn from ["Which color scale to use when visualizing data" by Lisa Charlotte Muth](https://blog.datawrapper.de/which-color-scale-to-use-in-data-vis/)
