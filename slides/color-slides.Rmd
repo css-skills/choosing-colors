@@ -106,8 +106,8 @@ choropleth + line_chart +
 # Categorical color scales
 
 ```{r}
-include_graphics(path = here("images", "hue-example.png"))
-include_graphics(path = here("images", "hue-example2.png"))
+include_graphics(path = "images/hue-example.png")
+include_graphics(path = "images/hue-example2.png")
 ```
 
 .footnote[Sources: FiveThirtyEight, The Economist]
@@ -117,8 +117,8 @@ include_graphics(path = here("images", "hue-example2.png"))
 # Sequential color scales
 
 ```{r}
-include_graphics(path = here("images", "seq-class-ex.png"))
-include_graphics(path = here("images", "seq-unclass-ex.png"))
+include_graphics(path = "images/seq-class-ex.png")
+include_graphics(path = "images/seq-unclass-ex.png")
 ```
 
 .footnote[Sources: New York Times, Datawrapper]
@@ -128,8 +128,8 @@ include_graphics(path = here("images", "seq-unclass-ex.png"))
 # Diverging color scales
 
 ```{r}
-include_graphics(path = here("images", "div-class-ex.png"))
-include_graphics(path = here("images", "div-unclass-ex.png"))
+include_graphics(path = "images/div-class-ex.png")
+include_graphics(path = "images/div-unclass-ex.png")
 ```
 
 .footnote[Sources: Axios, Opportunity Atlas]
@@ -139,9 +139,9 @@ include_graphics(path = here("images", "div-unclass-ex.png"))
 # Highlighting/de-emphasizing
 
 ```{r}
-include_graphics(path = here("images", "highlight-zero.png"))
-include_graphics(path = here("images", "deemphasize-cat.png"))
-include_graphics(path = here("images", "bin-grad-na.png"))
+include_graphics(path = "images/highlight-zero.png")
+include_graphics(path = "images/deemphasize-cat.png")
+include_graphics(path = "images/bin-grad-na.png")
 ```
 
 .footnote[Sources: The Guardian, The Pudding, Bloomberg]
@@ -310,7 +310,7 @@ gg_color_gradient(n = 200) +
 # When to use quantitative or qualitative color scales?
 
 ```{r}
-include_graphics(path = here("images", "quant-qual.png"))
+include_graphics(path = "images/quant-qual.png")
 ```
 
 ---
@@ -318,7 +318,7 @@ include_graphics(path = here("images", "quant-qual.png"))
 # Use hues for nominal variables
 
 ```{r}
-include_graphics(path = here("images", "unordered.png"))
+include_graphics(path = "images/unordered.png")
 ```
 
 ---
@@ -326,7 +326,7 @@ include_graphics(path = here("images", "unordered.png"))
 # Use hues for nominal variables
 
 ```{r}
-include_graphics(path = here("images", "unemp-best.png"))
+include_graphics(path = "images/unemp-best.png")
 ```
 
 ---
@@ -334,7 +334,7 @@ include_graphics(path = here("images", "unemp-best.png"))
 # Quantitative $\neq$ continuous
 
 ```{r}
-include_graphics(path = here("images", "likert.png"))
+include_graphics(path = "images/likert.png")
 ```
 
 ---
@@ -342,7 +342,7 @@ include_graphics(path = here("images", "likert.png"))
 # Shades to emphasize order
 
 ```{r}
-include_graphics(path = here("images", "treemap.png"))
+include_graphics(path = "images/treemap.png")
 ```
 
 
@@ -351,7 +351,7 @@ include_graphics(path = here("images", "treemap.png"))
 # Overcomplicating graphs
 
 ```{r}
-include_graphics(path = here("images", "treemap-third-var.png"))
+include_graphics(path = "images/treemap-third-var.png")
 ```
 
 ---
@@ -409,7 +409,7 @@ ggplot(data = few_df, mapping = aes(x = quarter, y = var_to_plan, group = state,
 # Encoding a new variable
 
 ```{r}
-include_graphics(path = here("images", "google-algorithm.png"))
+include_graphics(path = "images/google-algorithm.png")
 ```
 
 .footnote[Graphic detail page "Google's algorithm" in The Economist from June 8th, 2019]
@@ -419,7 +419,7 @@ include_graphics(path = here("images", "google-algorithm.png"))
 # Double-encoded line chart
 
 ```{r}
-include_graphics(path = here("images", "double-encode-lines.png"))
+include_graphics(path = "images/double-encode-lines.png")
 ```
 
 ---
@@ -427,7 +427,7 @@ include_graphics(path = here("images", "double-encode-lines.png"))
 # Shades to distinguish subcategories
 
 ```{r}
-include_graphics(path = here("images", "subcategories.png"))
+include_graphics(path = "images/subcategories.png")
 ```
 
 ---
@@ -435,7 +435,7 @@ include_graphics(path = here("images", "subcategories.png"))
 # Stick to shades of one hue
 
 ```{r}
-include_graphics(path = here("images", "hues-single.png"))
+include_graphics(path = "images/hues-single.png")
 ```
 
 ---
@@ -655,7 +655,7 @@ countdown(minutes = 8)
 # When to use sequential or diverging color scales?
 
 ```{r}
-include_graphics(path = here("images", "seq-div.png"))
+include_graphics(path = "images/seq-div.png")
 ```
 
 ---
@@ -671,7 +671,7 @@ include_graphics(path = here("images", "seq-div.png"))
 # Meaningful middle point
 
 ```{r}
-include_graphics(path = here("images", "div-palette.png"))
+include_graphics(path = "images/div-palette.png")
 ```
 
 - Zero
@@ -685,7 +685,7 @@ include_graphics(path = here("images", "div-palette.png"))
 # WTF?
 
 ```{r}
-include_graphics(path = here("images", "pepmusic.png"))
+include_graphics(path = "images/pepmusic.png")
 ```
 
 ---
@@ -734,7 +734,7 @@ internet_plot +
 # Increased range in scale
 
 ```{r}
-include_graphics(path = here("images", "births-div.png"))
+include_graphics(path = "images/births-div.png")
 ```
 
 ---
@@ -742,7 +742,7 @@ include_graphics(path = here("images", "births-div.png"))
 # Increased range in scale
 
 ```{r}
-include_graphics(path = here("images", "births-seq.png"))
+include_graphics(path = "images/births-seq.png")
 ```
 
 ---
@@ -790,7 +790,7 @@ countdown(minutes = 8)
 # When to use classed or unclassed color scales?
 
 ```{r}
-include_graphics(path = here("images", "class-scale.png"))
+include_graphics(path = "images/class-scale.png")
 ```
 
 ---
@@ -798,7 +798,7 @@ include_graphics(path = here("images", "class-scale.png"))
 # Use a classed scale if the data is classed
 
 ```{r}
-include_graphics(path = here("images", "class-continuous.png"))
+include_graphics(path = "images/class-continuous.png")
 ```
 
 ---
