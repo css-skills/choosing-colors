@@ -46,7 +46,6 @@ _site
 .DS_Store
 
 # README.html
-README.html
 LICENSE.html
 
 # Jupyter notebooks
