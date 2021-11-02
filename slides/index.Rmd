@@ -35,6 +35,28 @@ if (!identical(getOption("bitmapType"), "cairo") && isTRUE(capabilities()[["cair
 
 theme_set(theme_minimal())
 
+# map theme
+theme_map <- function(base_size, ...) {
+  theme_minimal(base_size = base_size) +
+  theme(
+    text = element_text(family = "Ubuntu Regular", color = "#22211d"),
+    axis.line = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    # panel.grid.minor = element_line(color = "#ebebe5", size = 0.2),
+    panel.grid.major = element_line(color = "#ebebe5", size = 0.2),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#f5f5f2", color = NA), 
+    panel.background = element_rect(fill = "#f5f5f2", color = NA), 
+    legend.background = element_rect(fill = "#f5f5f2", color = NA),
+    panel.border = element_blank(),
+    ...
+  )
+}
+
 set.seed(123)
 theme_set(theme_minimal(base_size = rcfss::base_size - 2))
 ```
@@ -71,7 +93,7 @@ choropleth <- unemp_sf %>%
   geom_sf(color = "white") +
   scale_fill_viridis_c(labels = scales::percent, option = "magma") +
   labs(fill = "2010") +
-  theme_void(base_size = rcfss::base_size - 2)
+  theme_map(base_size = rcfss::base_size - 2)
 
 # create line chart highlighting Texas and New York
 line_chart <- ggplot(data = unemp, mapping = aes(x = year, y = unemp, group = state_fips)) +
@@ -90,12 +112,12 @@ line_chart <- ggplot(data = unemp, mapping = aes(x = year, y = unemp, group = st
     y = NULL,
     color = NULL
   ) +
+  theme_minimal(base_size = rcfss::base_size - 2) +
   theme(
     strip.text.x = element_blank(),
     strip.background = element_rect(color = "white", fill = "white"),
-    legend.position = c(.9, .9)
-  ) +
-  theme_minimal(base_size = rcfss::base_size - 2)
+    legend.position = c(.8, .92)
+  )
 
 choropleth + line_chart +
   plot_annotation(title = "US unemployment rate")
@@ -201,7 +223,7 @@ state_inc %>%
     caption = "Source: 2019 American Community Survey",
     fill = NULL
   ) +
-  theme_void(base_size = rcfss::base_size - 6)
+  theme_map(base_size = rcfss::base_size - 6)
 ```
 
 ---
@@ -491,12 +513,26 @@ ggplot(data = gss_polviews, mapping = aes(x = polviews, fill = polviews)) +
 
 ---
 
+# `scale_*_brewer()`
+
+```{r, include = FALSE}
+gss_polviews <- drop_na(gss, polviews)
+```
+
+```{r echo = TRUE, fig.height = 6}
+ggplot(data = gss_polviews, mapping = aes(x = polviews, fill = polviews)) +
+  geom_bar() +
+  scale_fill_brewer(type = "seq", guide = FALSE)
+```
+
+---
+
 # Sequential palette
 
 ```{r echo = TRUE, fig.height = 6}
 ggplot(data = gss_polviews, mapping = aes(x = polviews, fill = polviews)) +
   geom_bar() +
-  scale_fill_brewer(palette = "OrRd")
+  scale_fill_brewer(palette = "OrRd", guide = FALSE)
 ```
 
 ---
@@ -513,7 +549,7 @@ gss_relig <- drop_na(gss, relig) %>%
 ```{r echo = TRUE, fig.height = 6}
 ggplot(data = gss_relig, mapping = aes(x = relig, fill = relig)) +
   geom_bar() +
-  scale_fill_brewer()
+  scale_fill_brewer(guide = FALSE)
 ```
 
 ---
@@ -523,7 +559,7 @@ ggplot(data = gss_relig, mapping = aes(x = relig, fill = relig)) +
 ```{r echo = TRUE, fig.height = 6}
 ggplot(data = gss_relig, mapping = aes(x = relig, fill = relig)) +
   geom_bar() +
-  scale_fill_brewer(type = "qual")
+  scale_fill_brewer(type = "qual", guide = FALSE)
 ```
 
 ---
@@ -637,7 +673,7 @@ ggplot(data = unemp_20, mapping = aes(fill = unemp)) +
 ```{r echo = TRUE, fig.height = 6}
 ggplot(data = gss_polviews, mapping = aes(x = polviews, fill = polviews)) +
   geom_bar() +
-  scale_fill_viridis_d()
+  scale_fill_viridis_d(guide = FALSE)
 ```
 
 ---
@@ -699,7 +735,8 @@ internet_use <- read_csv(file = here("data", "internet-consumption.csv")) %>%
   mutate(usage = usage / 100)
 
 # get global shapefile
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- ne_countries(scale = "medium", returnclass = "sf") %>%
+  filter(continent != "Antarctica")
 
 # join together
 internet_sf <- left_join(x = world, y = internet_use, by = c("iso_a3" = "code"))
@@ -714,7 +751,7 @@ internet_plot <- ggplot(data = internet_sf, mapping = aes(fill = usage)) +
     subtitle = "2015",
     fill = NULL
   ) +
-  theme_void(base_size = 14)
+  theme_map(base_size = rcfss::base_size - 4)
 
 internet_plot +
   scale_fill_distiller(type = "seq", labels = scales::percent)
@@ -752,7 +789,7 @@ include_graphics(path = "images/births-seq.png")
 ```{r echo = TRUE, fig.height = 6}
 ggplot(data = gss_polviews, mapping = aes(x = polviews, fill = polviews)) +
   geom_bar() +
-  scale_fill_brewer(type = "div")
+  scale_fill_brewer(type = "div", guide = FALSE)
 ```
 
 ---
@@ -830,7 +867,7 @@ unemp_class <- ggplot(data = unemp_oct21) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_manual(values = c("grey", "maroon"), labels = c("< 6.9%", ">= 6.9%")) +
   labs(title = "Counties with an unemployment rate above the\nnational average and below in October 2020", fill = NULL) +
-  theme_void(base_size = 14) +
+  theme_map(base_size = rcfss::base_size - 4) +
   theme(legend.position = "bottom")
 unemp_class
 ```
@@ -850,7 +887,7 @@ unemp_unclass <- ggplot(data = unemp_oct21) +
     labels = c("Lower", "National average", "Higher")
   ) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = 14)
+  theme_map(base_size = rcfss::base_size - 4)
 unemp_unclass
 ```
 
@@ -866,7 +903,7 @@ unemp_class6 <- unemp_oct21 %>%
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_brewer(palette = "PuOr") +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = 14)
+  theme_map(base_size = rcfss::base_size - 4)
 unemp_class6
 ```
 
@@ -908,10 +945,10 @@ unemp_class6
     ggplot() +
     geom_sf(mapping = aes(fill = unemp_cap), color = "white", size = .1) +
     geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
-    scale_fill_brewer(palette = "PuOr") +
+    scale_fill_brewer(palette = "PuOr", direction = -1) +
     labs(fill = NULL) +
     coord_sf(xlim = c(-109, -91), ylim = c(39, 49), crs = 4326) +
-    theme_void(base_size = 14)
+    theme_map(base_size = rcfss::base_size - 4)
 }
 ```
 
@@ -954,7 +991,7 @@ ggplot(data = unemp_oct21, mapping = aes(fill = unemp)) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_viridis_c(direction = -1, labels = percent_format(accuracy = 1)) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = rcfss::base_size - 4) +
+  theme_map(base_size = rcfss::base_size - 4) +
   theme(
     legend.position = "bottom",
     legend.key.width = unit(2, "cm")
@@ -971,7 +1008,7 @@ ggplot(data = unemp_oct21, mapping = aes(fill = unemp)) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_viridis_b(direction = -1, labels = percent_format(accuracy = 1), n.breaks = 3, nice.breaks = FALSE) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = rcfss::base_size - 4) +
+  theme_map(base_size = rcfss::base_size - 4) +
   theme(
     legend.position = "bottom",
     legend.key.width = unit(2, "cm")
@@ -988,7 +1025,7 @@ ggplot(data = unemp_oct21, mapping = aes(fill = unemp)) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_viridis_b(direction = -1, labels = percent_format(accuracy = 1), n.breaks = 4, nice.breaks = FALSE) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = rcfss::base_size - 4) +
+  theme_map(base_size = rcfss::base_size - 4) +
   theme(
     legend.position = "bottom",
     legend.key.width = unit(2, "cm")
@@ -1005,7 +1042,7 @@ ggplot(data = unemp_oct21, mapping = aes(fill = unemp)) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_viridis_b(direction = -1, labels = percent_format(accuracy = 1), n.breaks = 9, nice.breaks = FALSE) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = rcfss::base_size - 4) +
+  theme_map(base_size = rcfss::base_size - 4) +
   theme(
     legend.position = "bottom",
     legend.key.width = unit(3, "cm")
@@ -1031,7 +1068,7 @@ unemp_oct21 %>%
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
   scale_fill_viridis_d(direction = -1) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
-  theme_void(base_size = rcfss::base_size - 4)
+  theme_map(base_size = rcfss::base_size - 4)
 ```
 
 ---
@@ -1216,9 +1253,9 @@ unemp_oct21 %>%
 
 ---
 
-# Exercises on interpolating continuous variables
-
 class: middle, center, inverse
+
+# Exercises on interpolating continuous variables
 
 ```{r cache = FALSE}
 countdown(minutes = 7)
