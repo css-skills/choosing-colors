@@ -769,7 +769,7 @@ internet_plot <- ggplot(data = internet_sf, mapping = aes(fill = usage)) +
   theme_map(base_size = rcfss::base_size - 4)
 
 internet_plot +
-  scale_fill_distiller(type = "seq", labels = scales::percent)
+  scale_fill_distiller(type = "seq", labels = scales::percent, direction = +1)
 ```
 
 ---
