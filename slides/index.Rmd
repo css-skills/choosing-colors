@@ -633,7 +633,7 @@ img(rev(magma(n_col)), "magma")
 
 ---
 
-# Comparison of palettes
+# Green-Blind (Deuteranopia)
 
 ```{r}
 par(mfrow = c(7, 1), mar = rep(1, 4))
@@ -644,6 +644,21 @@ img(dichromat(gradient_n_pal(brewer_pal(type = "seq")(9))(seq(0, 1, length = n_c
 img(dichromat(gradient_n_pal(brewer_pal(type = "seq", palette = "YlGnBu")(9))(seq(0, 1, length = n_col)), "protan"), "brewer yellow-green-blue")
 img(dichromat(rev(viridis(n_col)), "protan"), "viridis")
 img(dichromat(rev(magma(n_col)), "protan"), "magma")
+```
+
+---
+
+# Desaturated
+
+```{r}
+par(mfrow=c(7, 1), mar=rep(1, 4))
+img(desaturate(rev(rainbow(n_col))), "rainbow")
+img(desaturate(rev(heat.colors(n_col))), "heat")
+img(desaturate(rev(seq_gradient_pal(low = "#132B43", high = "#56B1F7", space = "Lab")(seq(0, 1, length=n_col)))), "ggplot default")
+img(desaturate(gradient_n_pal(brewer_pal(type="seq")(9))(seq(0, 1, length=n_col))), "brewer blues")
+img(desaturate(gradient_n_pal(brewer_pal(type="seq", palette = "YlGnBu")(9))(seq(0, 1, length=n_col))), "brewer yellow-green-blue")
+img(desaturate(rev(viridis(n_col))), "viridis")
+img(desaturate(rev(magma(n_col))), "magma")
 ```
 
 ---
