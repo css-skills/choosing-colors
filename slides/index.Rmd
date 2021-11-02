@@ -916,7 +916,7 @@ unemp_class6 <- unemp_oct21 %>%
   ggplot() +
   geom_sf(mapping = aes(fill = unemp_cap), color = "white", size = .1) +
   geom_sf(data = states_sf, color = "white", fill = NA, size = .3) +
-  scale_fill_brewer(palette = "PuOr") +
+  scale_fill_brewer(palette = "PuOr", direction = -1) +
   labs(title = "Unemployment rate", subtitle = "October 2020", fill = NULL) +
   theme_map(base_size = rcfss::base_size - 4)
 unemp_class6
